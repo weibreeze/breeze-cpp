@@ -46,9 +46,8 @@ int TestSubMsg::read_from(BytesBuffer *buf) {
             case 11:
                 return breeze::read_value(buf, this->b);
             default:
-                break;
+                return -1;
         }
-        return -1;
     });
 }
 
@@ -87,9 +86,8 @@ int TestMsg::read_from(BytesBuffer *buf) {
             case 4:
                 return breeze::read_value(buf, this->a);
             default:
-                break;
+                return -1;
         }
-        return 0;
     });
 }
 

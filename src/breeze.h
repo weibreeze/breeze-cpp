@@ -42,9 +42,9 @@ enum BreezeType {
 
 class BreezeField {
 public:
-    int index_;
-    std::string name_;
-    std::string type_;
+    int index_{};
+    std::string name_{};
+    std::string type_{};
 };
 
 class BreezeSchema {
@@ -80,18 +80,6 @@ public:
 
 class breeze {
 public:
-    static int get_serialize_num() { return 8; }
-
-    template<typename T>
-    int serialize_buf(T &v, BytesBuffer &buf) {
-        return this->write_value(&buf, v);
-    }
-
-    template<typename T>
-    int deserialize_buf(BytesBuffer &buf, T &v) {
-        return this->read_value(&buf, v);
-    }
-
     template<typename T>
     static int write_message(BytesBuffer *buf, const std::string &name, T func) {
         buf->write_byte(kBreezeMessage);
