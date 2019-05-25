@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 set -x -e
 
-DEPS_PREFIX=`pwd`/third
+PWD_PATH=`pwd`
+DEPS_PREFIX=${PWD_PATH}/third
 
+mkdir -p ${DEPS_PREFIX} || true
 cd ${DEPS_PREFIX}
-tar xvf googletest-release-1.8.1.tar.gz
-cd googletest-release-1.8.1
-mkdir build-gtest
-cd build-gtest
+git clone https://github.com/google/googletest
+cd googletest
+mkdir build || true
+cd build
 cmake ..
 make
-make install
+sudo make install
 make clean
-cd -
