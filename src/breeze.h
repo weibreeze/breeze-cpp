@@ -78,6 +78,11 @@ public:
     virtual std::shared_ptr<BreezeSchema> get_schema() = 0;
 };
 
+class BreezeEnum : public BreezeMessage {
+public:
+    virtual int read_enum(BytesBuffer *) = 0;
+};
+
 class breeze {
 public:
     template<typename T>
@@ -286,7 +291,11 @@ public:
 
     static int read_value(BytesBuffer *buf, BreezeMessage &v);
 
+    static int read_value(BytesBuffer *buf, BreezeEnum &v);
+
     static int read_message(BytesBuffer *buf, BreezeMessage &v);
+
+    static int read_enum(BytesBuffer *buf, BreezeEnum &v);
 
     static int read_value(BytesBuffer *buf, std::string &v);
 

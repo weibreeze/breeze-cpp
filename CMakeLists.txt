@@ -13,7 +13,7 @@ link_directories(${PROJECT_SOURCE_DIR}/third/googletest/build/lib)
 set(RPC_SOURCE
         src/breeze.cpp
         src/common/buffer.cpp
-        src/test_msg.breeze.cpp)
+        src/testmsg.breeze.cpp)
 add_library(breeze ${RPC_SOURCE})
 
 set(UNIT_TEST_SOURCE

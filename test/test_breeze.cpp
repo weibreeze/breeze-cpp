@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 #include "breeze.h"
 #include "common/buffer.h"
-#include "test_msg.breeze.h"
+#include "testmsg.breeze.h"
 
 #define DEFAULT_BUFFER_SIZE 200
 
@@ -128,56 +128,60 @@ TEST(ComplexType, NestedList) {
 
 TEST(MessageType, BasiceMessage) {
     TestSubMsg msg{};
-    msg.s = "hello";
-    msg.i32 = 123;
-    msg.i64 = 23456;
-    msg.f = 1.23;
-    msg.d = 123.456;
-    msg.byte = 'b';
-    msg.bytes = {'a', 'b', 'c'};
-    msg.map1["love"] = {'u'};
-    msg.map2[111] = {999};
+    msg.myString = "hello";
+    msg.myInt = 123;
+    msg.myInt64 = 23456;
+    msg.myFloat32 = 1.23;
+    msg.myFloat64 = 123.456;
+    msg.myByte = 'b';
+    msg.myBytes = {'a', 'b', 'c'};
+    msg.myMap1["love"] = {'u'};
+    msg.myMap2[111] = {999};
     TestSubMsg ret{};
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
     auto err = breeze::write_value(buf.get(), msg);
     ASSERT_EQ(err, MOTAN_OK);
     err = breeze::read_value(buf.get(), ret);
     ASSERT_EQ(err, MOTAN_OK);
-    ASSERT_EQ(ret.s, msg.s);
-    ASSERT_EQ(ret.i32, msg.i32);
-    ASSERT_EQ(ret.i64, msg.i64);
-    ASSERT_EQ(ret.f, msg.f);
-    ASSERT_EQ(ret.d, msg.d);
-    ASSERT_EQ(ret.byte, msg.byte);
-    ASSERT_EQ(ret.bytes, msg.bytes);
-    ASSERT_EQ(ret.map1, msg.map1);
-    ASSERT_EQ(std::any_cast<int32_t>(ret.map2[111][0]), std::any_cast<int32_t>(msg.map2[111][0]));
+    ASSERT_EQ(ret.myString, msg.myString);
+    ASSERT_EQ(ret.myInt, msg.myInt);
+    ASSERT_EQ(ret.myInt64, msg.myInt64);
+    ASSERT_EQ(ret.myFloat32, msg.myFloat32);
+    ASSERT_EQ(ret.myFloat64, msg.myFloat64);
+    ASSERT_EQ(ret.myByte, msg.myByte);
+    ASSERT_EQ(ret.myBytes, msg.myBytes);
+    ASSERT_EQ(ret.myMap1, msg.myMap1);
+    ASSERT_EQ(ret.myMap2[111][0], msg.myMap2[111][0]);
 }
 
 TEST(MessageType, NestedMessage) {
     TestSubMsg sub_arg{};
-    sub_arg.map2[111] = {999};
+    sub_arg.myMap2[111] = {999};
     TestMsg arg{};
-    arg.i = 10;
-    arg.s = "zha";
-    arg.a = std::vector<TestSubMsg>{sub_arg};
+    arg.myInt = 10;
+    arg.myString = "zha";
+    arg.myArray = std::vector<TestSubMsg>{sub_arg};
+    arg.myEnum = MyEnum::E1;
+    arg.enumArray = std::vector<MyEnum>{MyEnum{MyEnum::E2}, MyEnum{MyEnum::E3}};
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
     auto err = breeze::write_value(buf.get(), arg);
     ASSERT_EQ(err, MOTAN_OK);
     TestMsg ret{};
     err = breeze::read_value(buf.get(), ret);
     ASSERT_EQ(err, MOTAN_OK);
-    ASSERT_EQ(ret.s, arg.s);
-    ASSERT_EQ(ret.i, arg.i);
-    ASSERT_EQ(std::any_cast<int32_t>(ret.a[0].map2[111][0]), std::any_cast<int32_t>(arg.a[0].map2[111][0]));
+    ASSERT_EQ(ret.myString, arg.myString);
+    ASSERT_EQ(ret.myInt, arg.myInt);
+    ASSERT_EQ(ret.myArray[0].myMap2[111][0], arg.myArray[0].myMap2[111][0]);
+    ASSERT_EQ(ret.myEnum, arg.myEnum);
+    ASSERT_EQ(ret.enumArray, arg.enumArray);
 }
 
 TEST(MessageType, GenericMessage) {
     // TestSubMsg => GenericMessage
     TestSubMsg msg{};
-    msg.s = "hello";
-    msg.i32 = 123;
-    msg.f = 1.23;
+    msg.myString = "hello";
+    msg.myInt = 123;
+    msg.myFloat32 = 1.23;
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
     auto err = breeze::write_value(buf.get(), msg);
     ASSERT_EQ(err, MOTAN_OK);
@@ -185,9 +189,9 @@ TEST(MessageType, GenericMessage) {
     err = breeze::read_value(buf.get(), ret_msg);
     ASSERT_EQ(err, MOTAN_OK);
     ASSERT_EQ(msg.get_name(), ret_msg.get_name());
-    ASSERT_EQ(msg.s, std::any_cast<std::string>(ret_msg.get_field_by_index(1)));
-    ASSERT_EQ(msg.i32, std::any_cast<int32_t>(ret_msg.get_field_by_index(2)));
-    ASSERT_EQ(msg.f, std::any_cast<float_t>(ret_msg.get_field_by_index(4)));
+    ASSERT_EQ(msg.myString, std::any_cast<std::string>(ret_msg.get_field_by_index(1)));
+    ASSERT_EQ(msg.myInt, std::any_cast<int32_t>(ret_msg.get_field_by_index(2)));
+    ASSERT_EQ(msg.myFloat32, std::any_cast<float_t>(ret_msg.get_field_by_index(4)));
 
     // GenericMessage => GenericMessage
     GenericMessage data{};
