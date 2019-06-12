@@ -93,13 +93,23 @@ TestMsg::TestMsg() {
 
 int TestMsg::write_to(BytesBuffer *buf) const {
     return breeze::write_message(buf, schema_->name_, [this, buf]() {
-        breeze::write_message_field(buf, 1, this->myInt);
-        breeze::write_message_field(buf, 2, this->myString);
-        breeze::write_message_field(buf, 3, this->myMap);
-        breeze::write_message_field(buf, 4, this->myArray);
+        if (this->myInt != 0) {
+            breeze::write_message_field(buf, 1, this->myInt);
+        }
+        if (!this->myString.empty()) {
+            breeze::write_message_field(buf, 2, this->myString);
+        }
+        if (!this->myMap.empty()) {
+            breeze::write_message_field(buf, 3, this->myMap);
+        }
+        if (!this->myArray.empty()) {
+            breeze::write_message_field(buf, 4, this->myArray);
+        }
         breeze::write_message_field(buf, 5, this->subMsg);
         breeze::write_message_field(buf, 6, this->myEnum);
-        breeze::write_message_field(buf, 7, this->enumArray);
+        if (!this->enumArray.empty()) {
+            breeze::write_message_field(buf, 7, this->enumArray);
+        }
     });
 }
 
@@ -152,17 +162,39 @@ TestSubMsg::TestSubMsg() {
 
 int TestSubMsg::write_to(BytesBuffer *buf) const {
     return breeze::write_message(buf, schema_->name_, [this, buf]() {
-        breeze::write_message_field(buf, 1, this->myString);
-        breeze::write_message_field(buf, 2, this->myInt);
-        breeze::write_message_field(buf, 3, this->myInt64);
-        breeze::write_message_field(buf, 4, this->myFloat32);
-        breeze::write_message_field(buf, 5, this->myFloat64);
-        breeze::write_message_field(buf, 6, this->myByte);
-        breeze::write_message_field(buf, 7, this->myBytes);
-        breeze::write_message_field(buf, 8, this->myMap1);
-        breeze::write_message_field(buf, 9, this->myMap2);
-        breeze::write_message_field(buf, 10, this->myArray);
-        breeze::write_message_field(buf, 11, this->myBool);
+        if (!this->myString.empty()) {
+            breeze::write_message_field(buf, 1, this->myString);
+        }
+        if (this->myInt != 0) {
+            breeze::write_message_field(buf, 2, this->myInt);
+        }
+        if (this->myInt64 != 0) {
+            breeze::write_message_field(buf, 3, this->myInt64);
+        }
+        if (this->myFloat32 != 0) {
+            breeze::write_message_field(buf, 4, this->myFloat32);
+        }
+        if (this->myFloat64 != 0) {
+            breeze::write_message_field(buf, 5, this->myFloat64);
+        }
+        if (this->myByte != 0) {
+            breeze::write_message_field(buf, 6, this->myByte);
+        }
+        if (!this->myBytes.empty()) {
+            breeze::write_message_field(buf, 7, this->myBytes);
+        }
+        if (!this->myMap1.empty()) {
+            breeze::write_message_field(buf, 8, this->myMap1);
+        }
+        if (!this->myMap2.empty()) {
+            breeze::write_message_field(buf, 9, this->myMap2);
+        }
+        if (!this->myArray.empty()) {
+            breeze::write_message_field(buf, 10, this->myArray);
+        }
+        if (this->myBool) {
+            breeze::write_message_field(buf, 11, this->myBool);
+        }
     });
 }
 
