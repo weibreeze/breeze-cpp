@@ -185,6 +185,14 @@ int breeze::read_value(BytesBuffer *buf, BreezeMessage &v) {
     return read_message(buf, v);
 }
 
+int breeze::read_value(BytesBuffer *buf, BreezeEnum &v) {
+    if (!check_type(buf, kBreezeMessage)) {
+        LOG_ERROR("mismatch type");
+        return E_MOTAN_MISMATCH_TYPE;
+    }
+    return read_enum(buf, v);
+}
+
 int breeze::read_value(BytesBuffer *buf, std::nullptr_t &i) {
     if (!check_type(buf, kBreezeNull)) {
         LOG_ERROR("mismatch type");
@@ -521,6 +529,27 @@ int breeze::read_value(BytesBuffer *buf, std::string &v) {
         return E_MOTAN_MISMATCH_TYPE;
     }
     return read_string(buf, v);
+}
+
+int breeze::read_enum(BytesBuffer *buf, BreezeEnum &v) {
+    std::string name{};
+    int err;
+    if ((err = read_value(buf, name))) {
+        LOG_ERROR("read_value err:{}", err);
+        return err;
+    }
+    if (v.get_name() != name) {
+        if (typeid(v) != typeid(GenericMessage)) {
+            LOG_ERROR("mismatch message type. expect:{}, real:{}", v.get_name().data(), name.data());
+            return E_MOTAN_MISMATCH_TYPE;
+        }
+        v.set_name(name);
+    }
+    if ((err = v.read_enum(buf))) {
+        LOG_ERROR("read_from err:{}", err);
+        return err;
+    }
+    return MOTAN_OK;
 }
 
 int breeze::read_message(BytesBuffer *buf, BreezeMessage &v) {
