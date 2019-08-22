@@ -14,9 +14,9 @@
 template<typename T, typename V>
 void test_data(const T &data, V ret) {
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
-    auto err = breeze::write_value(buf.get(), data);
+    auto err = breeze::write_value(buf.get(), data, true);
     ASSERT_EQ(err, MOTAN_OK);
-    err = breeze::read_value(buf.get(), ret);
+    err = breeze::read_value(buf.get(), ret, true, 0, "");
     ASSERT_EQ(err, MOTAN_OK);
     ASSERT_EQ(data, ret);
 }
@@ -139,9 +139,9 @@ TEST(MessageType, BasiceMessage) {
     msg.myMap2[111] = {999};
     TestSubMsg ret{};
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
-    auto err = breeze::write_value(buf.get(), msg);
+    auto err = breeze::write_value(buf.get(), msg, true);
     ASSERT_EQ(err, MOTAN_OK);
-    err = breeze::read_value(buf.get(), ret);
+    err = breeze::read_value(buf.get(), ret, true, 0, "");
     ASSERT_EQ(err, MOTAN_OK);
     ASSERT_EQ(ret.myString, msg.myString);
     ASSERT_EQ(ret.myInt, msg.myInt);
@@ -164,10 +164,10 @@ TEST(MessageType, NestedMessage) {
     arg.myEnum = MyEnum::E1;
     arg.enumArray = std::vector<MyEnum>{MyEnum{MyEnum::E2}, MyEnum{MyEnum::E3}};
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
-    auto err = breeze::write_value(buf.get(), arg);
+    auto err = breeze::write_value(buf.get(), arg, true);
     ASSERT_EQ(err, MOTAN_OK);
     TestMsg ret{};
-    err = breeze::read_value(buf.get(), ret);
+    err = breeze::read_value(buf.get(), ret, true, 0, "");
     ASSERT_EQ(err, MOTAN_OK);
     ASSERT_EQ(ret.myString, arg.myString);
     ASSERT_EQ(ret.myInt, arg.myInt);
@@ -183,29 +183,30 @@ TEST(MessageType, GenericMessage) {
     msg.myInt = 123;
     msg.myFloat32 = 1.23;
     std::shared_ptr<BytesBuffer> buf(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
-    auto err = breeze::write_value(buf.get(), msg);
+    auto err = breeze::write_value(buf.get(), msg, true);
     ASSERT_EQ(err, MOTAN_OK);
     GenericMessage ret_msg{};
-    err = breeze::read_value(buf.get(), ret_msg);
+    err = breeze::read_value(buf.get(), ret_msg, true, 0, "");
     ASSERT_EQ(err, MOTAN_OK);
     ASSERT_EQ(msg.get_name(), ret_msg.get_name());
-    ASSERT_EQ(msg.myString, std::any_cast<std::string>(ret_msg.get_field_by_index(1)));
-    ASSERT_EQ(msg.myInt, std::any_cast<int32_t>(ret_msg.get_field_by_index(2)));
-    ASSERT_EQ(msg.myFloat32, std::any_cast<float_t>(ret_msg.get_field_by_index(4)));
+    ASSERT_EQ(msg.myString, boost::any_cast<std::string>(ret_msg.get_field_by_index(1)));
+    ASSERT_EQ(msg.myInt, boost::any_cast<int32_t>(ret_msg.get_field_by_index(2)));
+    ASSERT_EQ(msg.myFloat32, boost::any_cast<float_t>(ret_msg.get_field_by_index(4)));
 
     // GenericMessage => GenericMessage
     GenericMessage data{};
     data.alias_ = data.name_ = "TestGeneric";
     data.put_field(1, "111");
-    data.put_field(2, "222");
-    data.put_field(3, "333");
+    data.put_field(2, std::string("222"));
+    data.put_field(3, 333);
     buf.reset(new_bytes_buffer(DEFAULT_BUFFER_SIZE));
-    err = breeze::write_value(buf.get(), data);
+    err = breeze::write_value(buf.get(), data, true);
     ASSERT_EQ(err, MOTAN_OK);
     GenericMessage ret{};
-    err = breeze::read_value(buf.get(), ret);
+    err = breeze::read_value(buf.get(), ret, true, 0, "");
     ASSERT_EQ(err, MOTAN_OK);
     ASSERT_EQ(data.get_name(), ret.get_name());
-    ASSERT_EQ(std::any_cast<const char *>(data.get_field_by_index(1)),
-              std::any_cast<std::string>(ret.get_field_by_index(1)));
+    ASSERT_EQ(boost::any_cast<const char *>(data.get_field_by_index(1)), boost::any_cast<std::string>(ret.get_field_by_index(1)));
+    ASSERT_EQ(boost::any_cast<std::string>(data.get_field_by_index(2)), boost::any_cast<std::string>(ret.get_field_by_index(2)));
+    ASSERT_EQ(boost::any_cast<int32_t>(data.get_field_by_index(3)), boost::any_cast<int32_t>(ret.get_field_by_index(3)));
 }

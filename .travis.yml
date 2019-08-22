@@ -6,15 +6,15 @@ addons:
   apt:
     packages: [lcov]
 env:
-  - COMPILER=g++-8
+  - COMPILER=g++-7
 
 install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update
-  - sudo apt-get install g++-8
+  - sudo apt-get install ${COMPILER}
   - sudo apt-get install cmake
   - export CXX=${COMPILER}
-  - ./start.sh
+  - ./start.sh install boost
   - cmake .
   - make
 

@@ -2,7 +2,15 @@ cmake_minimum_required(VERSION 3.2)
 project(breeze_cpp)
 
 #set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 17)
+
+if (((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7)) OR ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4)))
+    message("Based on C++14")
+    set(CMAKE_CXX_STANDARD 14)
+else ()
+    message("Based on C++17")
+    set(CMAKE_CXX_STANDARD 17)
+endif ()
+
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/lib)
 include_directories(${PROJECT_SOURCE_DIR}/src)
