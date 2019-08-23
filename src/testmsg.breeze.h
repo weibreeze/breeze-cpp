@@ -17,7 +17,7 @@ public:
         E3 = 3,
     };
 
-    EMyEnum value_{};
+    EMyEnum value_ = E1;
 
     MyEnum();
 
