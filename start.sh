@@ -2,21 +2,18 @@
 set -x -e
 
 DEPS_PREFIX=$(pwd)/third-party
-FLAG_DIR=$(pwd)/.flag
-mkdir -p "${DEPS_PREFIX}/src" "${FLAG_DIR}"
+mkdir -p "${DEPS_PREFIX}/src"
 
 install_libraries() {
   # 安装gtest
   if [ "$1"x == "gtest"x ] || [ "$2"x == "gtest"x ]; then
     cd "${DEPS_PREFIX}"/src
-    tar zxvf googletest-release-1.8.1.tar.gz
-    cd googletest-release-1.8.1
-    mkdir -p build-gtest
-    cd build-gtest
-    cmake ..
+    git clone https://github.com/google/googletest
+    cd googletest
+    cmake .
     make
-    make install
-    make clean
+    sudo cp lib/libgtest*.a  /usr/lib
+    sudo cp -a googletest/include/gtest/ /usr/include
     cd -
   fi
 
@@ -30,7 +27,7 @@ install_libraries() {
     cd boost_1_71_0
     ./bootstrap.sh --with-libraries=all --with-toolset=gcc
     ./b2 toolset=gcc
-    ./b2 install --prefix=/usr
+    ./b2 install --prefix=/usr/local
     ldconfig
     cd -
   fi

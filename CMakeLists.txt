@@ -4,20 +4,16 @@ project(breeze_cpp)
 #set(CMAKE_BUILD_TYPE Debug)
 
 if (((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7)) OR ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4)))
-    message("Based on C++14")
+    message(STATUS "Based on C++14")
     set(CMAKE_CXX_STANDARD 14)
 else ()
-    message("Based on C++17")
+    message(STATUS "Based on C++17")
     set(CMAKE_CXX_STANDARD 17)
 endif ()
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/lib)
 include_directories(${PROJECT_SOURCE_DIR}/src)
-
-include_directories(${PROJECT_SOURCE_DIR}/third-party/src/boost_1_71_0)
-include_directories(/usr/local/include)
-link_directories(/usr/local/lib)
 
 set(RPC_SOURCE
         src/breeze.cpp

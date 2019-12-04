@@ -14,6 +14,7 @@
 #endif
 
 #include <boost/any.hpp>
+#include <memory>
 #include <cmath>
 #include <string>
 #include <vector>
