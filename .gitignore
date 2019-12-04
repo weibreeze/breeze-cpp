@@ -50,4 +50,4 @@ _deps
 build
 breeze_cpp.cbp
 cmake-build-debug
-third
+third-party

@@ -15,8 +15,9 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/lib)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
-include_directories(${PROJECT_SOURCE_DIR}/third/googletest/googletest/include)
-link_directories(${PROJECT_SOURCE_DIR}/third/googletest/build/lib)
+include_directories(${PROJECT_SOURCE_DIR}/third-party/src/boost_1_71_0)
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib)
 
 set(RPC_SOURCE
         src/breeze.cpp

@@ -3,7 +3,7 @@ set -x -e
 
 DEPS_PREFIX=$(pwd)/third-party
 FLAG_DIR=$(pwd)/.flag
-mkdir -p "${DEPS_PREFIX}" "${FLAG_DIR}"
+mkdir -p "${DEPS_PREFIX}/src" "${FLAG_DIR}"
 
 install_libraries() {
   # 安装gtest
