@@ -1,20 +1,16 @@
 language: cpp
 os: linux
+dist: bionic
 sudo: required
 compiler: gcc
-addons:
-  apt:
-    packages: [lcov]
-env:
-  - COMPILER=g++-7
 
 install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update
-  - sudo apt-get install ${COMPILER}
   - sudo apt-get install cmake
-  - export CXX=${COMPILER}
-  - ./start.sh install boost
+  - sudo apt-get install lcov
+  - sudo apt-get install libboost-dev
+  - sudo ./start.sh install gtest
   - cmake .
   - make
 
